@@ -74,6 +74,7 @@ public abstract class AbstractConnectOperator<C extends KubernetesClient, T exte
 
     private static final Logger log = LogManager.getLogger(AbstractConnectOperator.class.getName());
     public static final String STRIMZI_IO_USE_CONNECTOR_RESOURCES = "strimzi.io/use-connector-resources";
+    public static final String ANNO_STRIMZI_IO_LOGGING = Annotations.STRIMZI_DOMAIN + "/logging";
 
     private final CrdOperator<KubernetesClient, KafkaConnector, KafkaConnectorList, DoneableKafkaConnector> connectorOperator;
     private final Function<Vertx, KafkaConnectApi> connectClientProvider;
@@ -167,7 +168,7 @@ public abstract class AbstractConnectOperator<C extends KubernetesClient, T exte
                                         }
                                         return connectOperator.withLock(reconciliation, LOCK_TIMEOUT_MS,
                                             () -> connectOperator.reconcileConnector(reconciliation,
-                                                    KafkaConnectResources.serviceName(connectName), apiClient,
+                                                    connectOperator.getServiceName(connectName), apiClient,
                                                     isUseResources(connect),
                                                     kafkaConnector.getMetadata().getName(), action == Action.DELETED ? null : kafkaConnector));
                                     } else {
@@ -177,7 +178,7 @@ public abstract class AbstractConnectOperator<C extends KubernetesClient, T exte
                                                 kafkaConnector.getMetadata().getNamespace(), connectName);
                                         return connectS2IOperator.withLock(r, LOCK_TIMEOUT_MS,
                                             () -> connectS2IOperator.reconcileConnector(r,
-                                                    KafkaConnectResources.serviceName(connectName), apiClient,
+                                                    connectS2IOperator.getServiceName(connectName), apiClient,
                                                     isUseResources(connectS2i),
                                                     kafkaConnector.getMetadata().getName(), action == Action.DELETED ? null : kafkaConnector));
                                     }
@@ -220,8 +221,8 @@ public abstract class AbstractConnectOperator<C extends KubernetesClient, T exte
     protected Future<Void> reconcileConnectors(Reconciliation reconciliation, T connect) {
         String connectName = connect.getMetadata().getName();
         String namespace = connect.getMetadata().getNamespace();
-        String host = KafkaConnectResources.serviceName(connectName);
-        KafkaConnectApi apiClient = connectClientProvider.apply(vertx);
+        String host = getServiceName(connectName);
+        KafkaConnectApi apiClient = getKafkaConnectApi();
         boolean useResources = isUseResources(connect);
         return CompositeFuture.join(apiClient.list(host, KafkaConnectCluster.REST_API_PORT),
                 connectorOperator.listAsync(namespace,
@@ -240,6 +241,10 @@ public abstract class AbstractConnectOperator<C extends KubernetesClient, T exte
                     .map(connector -> reconcileConnector(reconciliation, host, apiClient, useResources, connector.getMetadata().getName(), connector));
             return CompositeFuture.join(Stream.concat(deletionFutures, createUpdateFutures).collect(Collectors.toList())).map((Void) null);
         });
+    }
+
+    protected KafkaConnectApi getKafkaConnectApi() {
+        return connectClientProvider.apply(vertx);
     }
 
     private Future<Void> reconcileConnector(Reconciliation reconciliation, String host, KafkaConnectApi apiClient, boolean useResources, String connectorName, KafkaConnector connector) {
@@ -286,7 +291,7 @@ public abstract class AbstractConnectOperator<C extends KubernetesClient, T exte
             });
     }
 
-    private JsonObject asJson(KafkaConnectorSpec spec) {
+    protected JsonObject asJson(KafkaConnectorSpec spec) {
         JsonObject connectorConfigJson = new JsonObject();
         if (spec.getConfig() != null) {
             for (Map.Entry<String, Object> cf : spec.getConfig().entrySet()) {
@@ -366,5 +371,9 @@ public abstract class AbstractConnectOperator<C extends KubernetesClient, T exte
         });
 
         return updateStatusPromise.future();
+    }
+
+    protected String getServiceName(String connectName) {
+        return KafkaConnectResources.serviceName(connectName);
     }
 }
