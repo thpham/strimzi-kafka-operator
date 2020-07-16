@@ -45,6 +45,11 @@ COPY ./tmp/mirror-maker-agent.jar ${KAFKA_HOME}/libs/
 COPY ./tmp/tracing-agent.jar ${KAFKA_HOME}/libs/
 
 #####
+# Add MM2 Addons
+#####
+COPY ./tmp/mm2-addons.jar ${KAFKA_HOME}/libs/
+
+#####
 # Add 3dr party libs
 #####
 COPY kafka-thirdparty-libs/${THIRD_PARTY_LIBS}/target/dependency/ ${KAFKA_HOME}/libs/

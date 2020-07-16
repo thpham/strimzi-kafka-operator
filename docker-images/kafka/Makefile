@@ -17,6 +17,11 @@ clean:
 	cp ../../mirror-maker-agent/target/mirror-maker-agent-$(RELEASE_VERSION).jar tmp/mirror-maker-agent.jar
 	touch .mirror-maker-agent.tmp
 
+.mm2-addons.tmp: ../../mm2-addons/target/mm2-addons-$(RELEASE_VERSION).jar
+	test -d tmp || mkdir tmp
+	cp ../../mm2-addons/target/mm2-addons-$(RELEASE_VERSION).jar tmp/mm2-addons.jar
+	touch .mm2-addons.tmp
+
 .tracing-agent.tmp: ../../tracing-agent/target/tracing-agent-$(RELEASE_VERSION).jar
 	test -d tmp || mkdir tmp
 	cp ../../tracing-agent/target/tracing-agent-$(RELEASE_VERSION).jar tmp/tracing-agent.jar
@@ -32,7 +37,7 @@ clean:
 	mvn dependency:copy-dependencies $(MVN_ARGS) -f kafka-thirdparty-libs/cc/pom.xml
 	touch .thirdparty-libs-cc.tmp
 
-docker_build: .kafka-agent.tmp .tracing-agent.tmp .mirror-maker-agent.tmp .thirdparty-libs-$(THIRD_PARTY_LIBS).tmp .thirdparty-libs-cc.tmp docker_build_default
+docker_build: .kafka-agent.tmp .tracing-agent.tmp .mirror-maker-agent.tmp .mm2-addons.tmp .thirdparty-libs-$(THIRD_PARTY_LIBS).tmp .thirdparty-libs-cc.tmp docker_build_default
 	# Pull dependencies first
 
 include ../../Makefile.docker

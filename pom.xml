@@ -145,6 +145,7 @@
     <modules>
         <module>kafka-agent</module>
         <module>mirror-maker-agent</module>
+        <module>mm2-addons</module>
         <module>tracing-agent</module>
         <module>test</module>
         <module>test-container</module>
@@ -275,6 +276,11 @@
             <dependency>
                 <groupId>org.apache.kafka</groupId>
                 <artifactId>kafka-clients</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>connect-mirror</artifactId>
                 <version>${kafka.version}</version>
             </dependency>
             <dependency>
@@ -910,6 +916,7 @@
                                 <ignoredUnusedDeclaredDependency>org.apache.kafka:kafka_2.12:jar</ignoredUnusedDeclaredDependency>
                                 <ignoredUnusedDeclaredDependency>io.netty:netty-transport-native-epoll:jar</ignoredUnusedDeclaredDependency>
                                 <ignoredDependency>org.junit.platform</ignoredDependency>
+                                <ignoredUnusedDeclaredDependency>org.apache.kafka:connect-mirror</ignoredUnusedDeclaredDependency>
                                 <ignoredUnusedDeclaredDependency>org.apache.kafka:connect-file</ignoredUnusedDeclaredDependency>
                                 <ignoredDependency>org.junit.jupiter</ignoredDependency>
                                 <ignoredDependency>org.junit.platform</ignoredDependency>
