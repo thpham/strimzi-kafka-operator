@@ -36,8 +36,8 @@
 - version: 2.5.0
   format: 2.5
   protocol: 2.5
-  url: https://archive.apache.org/dist/kafka/2.5.0/kafka_2.12-2.5.0.tgz
-  checksum: 447A7057BCD9FACA98B6F4807BD6019EF73EEE90EFDC1E7B10005F669E2537A8A190CB8B9C9F4C20DB1D95B13D0F0487E9CC560D0759532058439CE7F722C7CD
+  url: https://f002.backblazeb2.com/file/ithings-public/kafka_2.12-2.5.0.tgz
+  checksum: 974af2c5da26f6f0599b4c08c5ceb80727e373a57f839002a70631a2dd52e32816fc421ca67852c43177505f4929bf69b487174e114017e7286b5a19b74ba4af
   zookeeper: 3.5.7
   third-party-libs: 2.5.x
   default: true
