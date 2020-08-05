@@ -1,4 +1,8 @@
-package org.strimzi.kafka.connect.mirror;
+/*
+ * Copyright Strimzi authors.
+ * License: Apache License 2.0 (see the file LICENSE or http://apache.org/licenses/LICENSE-2.0.html).
+ */
+package io.strimzi.kafka.connect.mirror;
 
 import java.util.Map;
 import org.apache.kafka.connect.mirror.DefaultReplicationPolicy;
