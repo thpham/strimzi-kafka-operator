@@ -4,6 +4,7 @@ metadata:
   name: my-mirror-maker-2
 spec:
   version: 2.5.0
+  # image: yourepo/strimzi/kafka:0.18.0-kafka-2.5.0-custom
   replicas: 1
   connectCluster: "my-target-cluster"
   clusters:
@@ -23,15 +24,23 @@ spec:
         replication.factor: 1
         offset-syncs.topic.replication.factor: 1
         sync.topic.acls.enabled: "false"
-        replication.policy.separator: ""
+        #replication.policy.separator: ""
         replication.policy.class: "io.strimzi.kafka.connect.mirror.IdentityReplicationPolicy"
         sync.group.offsets.enabled: "true"
         sync.group.offsets.interval.seconds: "10"
     heartbeatConnector:
       config:
         heartbeats.topic.replication.factor: 1
+        replication.policy.class: "io.strimzi.kafka.connect.mirror.IdentityReplicationPolicy"
+        sync.group.offsets.enabled: "true"
+        sync.group.offsets.interval.seconds: 60
     checkpointConnector:
       config:
         checkpoints.topic.replication.factor: 1
+        replication.policy.class: "io.strimzi.kafka.connect.mirror.IdentityReplicationPolicy"
+        sync.group.offsets.enabled: "true"
+        sync.group.offsets.interval.seconds: 60
     topicsPattern: ".*"
     groupsPattern: ".*"
+    #topicsBlacklistPattern: ".*[\\-\\.]internal, .*\\.replica, __consumer_offsets"
+    #groupsBlacklistPattern: "console-consumer-.*, connect-.*, __.*"
